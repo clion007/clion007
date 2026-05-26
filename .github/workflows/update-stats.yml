@@ -1,31 +1,48 @@
 name: 更新 GitHub 统计
 on:
   schedule:
-    - cron: '0 0 * * *'   # 每天更新一次
-  workflow_dispatch:       # 允许手动触发
+    - cron: '0 0 * * *'    # 每天 UTC 0 点
+  workflow_dispatch:        # 允许手动
 
 jobs:
-  metrics:
+  update-stats:
     runs-on: ubuntu-latest
     permissions:
-      contents: write      # 允许提交 README 更新
+      contents: write       # 允许推送
     steps:
       - uses: actions/checkout@v4
 
-      - name: 生成统计并更新 README
-        uses: lowlighter/metrics@latest
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          # 要生成的基础统计模块
-          base: header, activity, community, repositories, metadata
-          # 以 Markdown 文本形式输出（而不是图片）
-          config_output: markdown
-          plugin_lines: yes
-          # 关键：告诉 Action 把内容插入到 README 的这对注释之间
-          commits: |
-            <!-- METRICS:START -->
-            <!-- METRICS:END -->
-          # 关闭清理旧运行日志的功能，避免 403 报错
-          clean_workflow_runs: no
-          # 可选：只保留最近几次的运行记录
-          retain_workflow_runs: 5
+      - name: 生成统计内容并更新 README
+        env:
+          GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
+        run: |
+          # 获取用户信息
+          USER="clion007"
+          USER_DATA=$(gh api "users/${USER}")
+          REPOS_DATA=$(gh api "users/${USER}/repos?per_page=100&type=owner" --jq '.')
+          
+          # 统计数据
+          TOTAL_STARS=$(echo "$REPOS_DATA" | jq '[.[].stargazers_count] | add')
+          TOTAL_FORKS=$(echo "$REPOS_DATA" | jq '[.[].forks_count] | add')
+          PUBLIC_REPOS=$(echo "$USER_DATA" | jq '.public_repos')
+          FOLLOWERS=$(echo "$USER_DATA" | jq '.followers')
+          FOLLOWING=$(echo "$USER_DATA" | jq '.following')
+
+          # 生成 markdown 文本
+          STATS_MD="| 统计项 | 数量 |
+          |---|---|
+          | 📦 公共仓库 | ${PUBLIC_REPOS} |
+          | ⭐ 总 Stars | ${TOTAL_STARS} |
+          | 🍴 总 Forks | ${TOTAL_FORKS} |
+          | 👥 关注者 | ${FOLLOWERS} |
+          | 👤 正在关注 | ${FOLLOWING} |"
+
+          # 用 perl 替换 README 中标记内的内容（因为 sed 处理多行较麻烦）
+          perl -i -0777 -pe "s|<!-- STATS:START -->.*<!-- STATS:END -->|<!-- STATS:START -->\n${STATS_MD}\n<!-- STATS:END -->|s" README.md
+
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update stats" && git push)
