@@ -39,8 +39,8 @@ Here are some ideas to get you started:
 
 ### 📊 本月动态
 
-<!-- GITHUB_STATS:START -->
-<!-- GITHUB_STATS:END -->
+<!-- METRICS:START -->
+<!-- METRICS:END -->
 
 ---
 
