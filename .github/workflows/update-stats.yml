@@ -1,26 +1,34 @@
-name: Update GitHub Stats
-
+name: 更新 GitHub 统计
 on:
-  schedule: [{cron: "0 0 * * *"}]  # 每天更新一次
-  workflow_dispatch:               # 允许手动触发
+  schedule:
+    - cron: '0 0 * * *'   # 每天更新一次
+  workflow_dispatch:       # 允许手动触发
+
 jobs:
-  github-metrics:
+  metrics:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write      # 允许提交 README 更新
     steps:
-      - name: 生成基础统计 (文本)
+      - uses: actions/checkout@v4
+
+      - name: 生成统计并更新 README
         uses: lowlighter/metrics@latest
         with:
-          filename: metrics-basic.txt
           token: ${{ secrets.METRICS_TOKEN }}
-          base: header, repositories, activity, community, metadata
+          # 要生成的基础统计模块
+          base: header, activity, community, repositories, metadata
+          # 以 Markdown 文本形式输出（而不是图片）
+          config_output: markdown
           plugin_lines: yes
-          committer_branch: main
+          # 关键：告诉 Action 把内容插入到 README 的这对注释之间
           commits: |
-            # 查找并替换以下两行注释之间的内容
-            <!-- METRICS:BASIC:START -->
-            <!-- METRICS:BASIC:END -->
+            <!-- METRICS:START -->
+            <!-- METRICS:END -->
+          # 关闭清理旧运行日志的功能，避免 403 报错
+          clean_workflow_runs: no
+          # 可选：只保留最近几次的运行记录
+          retain_workflow_runs: 5
           
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
