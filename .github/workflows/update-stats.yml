@@ -1,29 +1,26 @@
 name: Update GitHub Stats
 
 on:
-  schedule:
-    # 每天 UTC 时间 0 点更新一次（可按需修改）
-    - cron: '0 0 * * *'
-  # 也允许手动触发
-  workflow_dispatch:
-
+  schedule: [{cron: "0 0 * * *"}]  # 每天更新一次
+  workflow_dispatch:               # 允许手动触发
 jobs:
-  update-stats:
+  github-metrics:
     runs-on: ubuntu-latest
     permissions:
-      contents: write    # 允许 action 推送更新到仓库
+      contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Generate GitHub Stats
-        uses: jstrieb/github-stats@master
+      - name: 生成基础统计 (文本)
+        uses: lowlighter/metrics@latest
         with:
-          # 你的 GitHub 用户名
-          username: clion007
-          # 在 README 中查找并替换下面这对注释之间的内容
-          start-marker: '<!-- GITHUB_STATS:START -->'
-          end-marker: '<!-- GITHUB_STATS:END -->'
+          filename: metrics-basic.txt
+          token: ${{ secrets.METRICS_TOKEN }}
+          base: header, repositories, activity, community, metadata
+          plugin_lines: yes
+          committer_branch: main
+          commits: |
+            # 查找并替换以下两行注释之间的内容
+            <!-- METRICS:BASIC:START -->
+            <!-- METRICS:BASIC:END -->
 
       - name: Commit and push if changed
         run: |
