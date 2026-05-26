@@ -39,8 +39,8 @@ Here are some ideas to get you started:
 
 ### 📊 本月动态
 
-<!-- METRICS:START -->
-<!-- METRICS:END -->
+<!-- STATS:START -->
+<!-- STATS:END -->
 
 ---
 
