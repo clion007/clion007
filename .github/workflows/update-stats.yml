@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: 生成统计内容并更新 README
         env:
@@ -32,14 +32,41 @@ jobs:
           | ⭐ 总 Stars | ${TOTAL_STARS} |
           | 🍴 总 Forks | ${TOTAL_FORKS} |
           | 👥 关注者 | ${FOLLOWERS} |
-          | 👤 正在关注 | ${FOLLOWING} |"
+          | 👤 正在关注 | ${FOLLOWING} |"          
 
-          # 加上 -CSD 即可正确处理 UTF-8 字符
-          perl -CSD -i -0777 -pe "s|<!-- STATS:START -->.*<!-- STATS:END -->|<!-- STATS:START -->\n${STATS_MD}\n<!-- STATS:END -->|s" README.md
+          # 用 Python 替换注释标记内的内容
+          python3 <<-PY
+          import re
 
+          with open('README.md', 'r', encoding='utf-8') as f:
+              content = f.read()
+
+          # 替换 <!-- STATS:START --> ... <!-- STATS:END --> 之间的内容
+          new_block = f"<!-- STATS:START -->\n{'''$STATS_MD'''}\n<!-- STATS:END -->"
+          updated = re.sub(
+              r'<!-- STATS:START -->.*?<!-- STATS:END -->',
+              new_block,
+              content,
+              flags=re.DOTALL
+          )
+
+          # 如果没有找到标记，则在文件末尾追加
+          if updated == content:
+              updated = content.rstrip() + "\n\n" + new_block + "\n"
+
+          with open('README.md', 'w', encoding='utf-8') as f:
+              f.write(updated)
+          PY
+          
       - name: 提交更新
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update stats" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update stats" && git push)    
+        
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          retain_days: 0
+          keep_minimum_runs: 2
