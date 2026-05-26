@@ -29,9 +29,3 @@ jobs:
           clean_workflow_runs: no
           # 可选：只保留最近几次的运行记录
           retain_workflow_runs: 5
-          
-      - name: Delete workflow runs
-        uses: Mattraks/delete-workflow-runs@v2
-        with:
-          retain_days: 0
-          keep_minimum_runs: 2
