@@ -37,7 +37,7 @@ Here are some ideas to get you started:
 
 ---
 
-### 📊 本月动态
+### 📊 我的动态
 
 <!-- STATS:START -->
 | 统计项 | 数量 |
@@ -59,13 +59,3 @@ Here are some ideas to get you started:
 - **支持项目**：如果你觉得我的项目对你有帮助，可以给仓库点个 ⭐ Star，这是对我最大的鼓励！
 
 ---
-
-<!-- STATS:START -->
-| 统计项 | 数量 |
-|---|---|
-| 📦 公共仓库 | 18 |
-| ⭐ 总 Stars | 219 |
-| 🍴 总 Forks | 64 |
-| 👥 关注者 | 17 |
-| 👤 正在关注 | 3 |
-<!-- STATS:END -->
