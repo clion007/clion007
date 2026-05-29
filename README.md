@@ -44,7 +44,7 @@ Here are some ideas to get you started:
 |---|---|
 | 📦 公共仓库 | 18 |
 | ⭐ 总 Stars | 219 |
-| 🍴 总 Forks | 64 |
+| 🍴 总 Forks | 63 |
 | 👥 关注者 | 17 |
 | 👤 正在关注 | 3 |
 <!-- STATS:END -->
@@ -65,7 +65,7 @@ Here are some ideas to get you started:
 |---|---|
 | 📦 公共仓库 | 18 |
 | ⭐ 总 Stars | 219 |
-| 🍴 总 Forks | 64 |
+| 🍴 总 Forks | 63 |
 | 👥 关注者 | 17 |
 | 👤 正在关注 | 3 |
 <!-- STATS:END -->
@@ -75,7 +75,7 @@ Here are some ideas to get you started:
 |---|---|
 | 📦 公共仓库 | 18 |
 | ⭐ 总 Stars | 219 |
-| 🍴 总 Forks | 64 |
+| 🍴 总 Forks | 63 |
 | 👥 关注者 | 17 |
 | 👤 正在关注 | 3 |
 <!-- STATS:END -->
