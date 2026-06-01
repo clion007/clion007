@@ -99,3 +99,13 @@ Here are some ideas to get you started:
 | 👥 关注者 | 17 |
 | 👤 正在关注 | 3 |
 <!-- STATS:END -->
+
+<!-- STATS:START -->
+| 统计项 | 数量 |
+|---|---|
+| 📦 公共仓库 | 18 |
+| ⭐ 总 Stars | 219 |
+| 🍴 总 Forks | 63 |
+| 👥 关注者 | 17 |
+| 👤 正在关注 | 3 |
+<!-- STATS:END -->
