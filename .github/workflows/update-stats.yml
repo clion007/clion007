@@ -27,45 +27,52 @@ jobs:
           FOLLOWERS=$(echo "$USER_DATA" | jq '.followers')
           FOLLOWING=$(echo "$USER_DATA" | jq '.following')
 
-          STATS_MD="| 统计项 | 数量 |
+          export STATS_MD="| 统计项 | 数量 |
           |---|---|
           | 📦 公共仓库 | ${PUBLIC_REPOS} |
           | ⭐ 总 Stars | ${TOTAL_STARS} |
           | 🍴 总 Forks | ${TOTAL_FORKS} |
           | 👥 关注者 | ${FOLLOWERS} |
-          | 👤 正在关注 | ${FOLLOWING} |"          
+          | 👤 正在关注 | ${FOLLOWING} |"
 
-          # 用 Python 替换注释标记内的内容
-          python3 <<-PY
-          import re
+          # 加引号避免 shell 展开，用 os.environ 读取变量
+          python3 <<'PY'
+          import re, os
+
+          stats_md = os.environ['STATS_MD']
+          start_marker = '<!-- STATS:START -->'
+          end_marker   = '<!-- STATS:END -->'
+          new_block    = f"{start_marker}\n{stats_md}\n{end_marker}"
 
           with open('README.md', 'r', encoding='utf-8') as f:
               content = f.read()
 
-          # 替换 <!-- STATS:START --> ... <!-- STATS:END --> 之间的内容
-          new_block = f"<!-- STATS:START -->\n{'''$STATS_MD'''}\n<!-- STATS:END -->"
-          updated = re.sub(
-              r'<!-- STATS:START -->.*?<!-- STATS:END -->',
-              new_block,
-              content,
-              flags=re.DOTALL
-          )
+          # 匹配所有 STATS 块（支持标记前后有可选空格）
+          pattern = r'<!--\s*STATS:START\s*-->.*?<!--\s*STATS:END\s*-->'
+          matches = list(re.finditer(pattern, content, flags=re.DOTALL))
 
-          # 如果没有找到标记，则在文件末尾追加
-          if updated == content:
-              updated = content.rstrip() + "\n\n" + new_block + "\n"
+          if matches:
+              # 记录第一个标记的起始位置
+              insert_pos = matches[0].start()
+              # 删除所有旧块
+              clean = re.sub(pattern, '', content, flags=re.DOTALL)
+              # 在原第一个标记位置插入新块
+              content = clean[:insert_pos] + new_block + clean[insert_pos:]
+          else:
+              # 没有任何标记，追加到文件末尾
+              content = content.rstrip() + "\n\n" + new_block + "\n"
 
           with open('README.md', 'w', encoding='utf-8') as f:
-              f.write(updated)
+              f.write(content)
           PY
-          
+
       - name: 提交更新
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update stats" && git push)    
-        
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update stats" && git push)
+
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
