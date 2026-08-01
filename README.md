@@ -42,7 +42,7 @@ Here are some ideas to get you started:
 | 统计项 | 数量 |
 |---|---|
 | 📦 公共仓库 | 18 |
-| ⭐ 总 Stars | 221 |
+| ⭐ 总 Stars | 222 |
 | 🍴 总 Forks | 63 |
 | 👥 关注者 | 18 |
 | 👤 正在关注 | 3 |
