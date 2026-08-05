@@ -45,7 +45,7 @@ Here are some ideas to get you started:
 | ⭐ 总 Stars | 217 |
 | 🍴 总 Forks | 63 |
 | 👥 关注者 | 18 |
-| 👤 正在关注 | 3 |
+| 👤 正在关注 | 2 |
 <!-- STATS:END -->
 
 ---
