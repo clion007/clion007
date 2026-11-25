@@ -43,7 +43,7 @@ Here are some ideas to get you started:
 |---|---|
 | 📦 公共仓库 | 16 |
 | ⭐ 总 Stars | 230 |
-| 🍴 总 Forks | 66 |
+| 🍴 总 Forks | 67 |
 | 👥 关注者 | 18 |
 | 👤 正在关注 | 2 |
 <!-- STATS:END -->
